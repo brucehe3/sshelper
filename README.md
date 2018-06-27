@@ -8,18 +8,16 @@ Version: `0.1`
 
 Requirements
 -------------
-* Python(2.7,3.4,3.5,3.6)
-* pymysql
+* Python(3.4,3.5,3.6)
 * selenium(3.13.0)
 * Django(1.9.4及以上)
 
 Installation
 ------------
 
-需要安装pymysql, selenium,Django
+需要安装selenium,Django
 
 ```bash
-pip install pymysql
 pip install selenium
 pip install Django
 

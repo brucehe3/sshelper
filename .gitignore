@@ -1,5 +1,6 @@
 .idea
+db.sqlite3
 sshelper/__pycache__/
 app/__pycache__/
 app/migrations/__pycache__/
-db.sqlite3
+app/management/commands/__pycache__/
