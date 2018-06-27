@@ -1,3 +1,12 @@
 from django.contrib import admin
+from .models import UserCase, UserCaseStep
 
-# Register your models here.
+
+@admin.register(UserCase)
+class UserCaseAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UserCaseStep)
+class UserCaseStepAdmin(admin.ModelAdmin):
+    pass
