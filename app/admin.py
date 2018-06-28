@@ -1,8 +1,9 @@
 from django.contrib import admin
 from .models import UserCase, UserCaseStep
+from adminsortable2.admin import SortableInlineAdminMixin
 
 
-class UserCaseStepInline(admin.TabularInline):
+class UserCaseStepInline(SortableInlineAdminMixin, admin.TabularInline):
     model = UserCaseStep
     # exclude = ('created',)
     # raw_id_fields = ('image',)
@@ -15,7 +16,4 @@ class UserCaseStepInline(admin.TabularInline):
 class UserCaseAdmin(admin.ModelAdmin):
     inlines = [UserCaseStepInline, ]
 
-
-@admin.register(UserCaseStep)
-class UserCaseStepAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('code', 'name',)

@@ -1,4 +1,5 @@
 from django.db import models
+from adminsortable.models import SortableMixin
 
 
 class UserCase(models.Model):
@@ -35,9 +36,13 @@ class UserCaseStep(models.Model):
     xpath = models.CharField('XPATH', help_text='用于找到对象', max_length=100, blank=True, null=True)
     step_type = models.SmallIntegerField('类型', choices=STEP_TYPE_CHOICES, default=0)
     step_text = models.CharField('提交的值', max_length=100, blank=True, null=True)
-    pause_seconds = models.PositiveSmallIntegerField('暂停时间', help_text='单位秒', default=0)
-    sort_order = models.IntegerField('排序', default=100)
+    pause_seconds = models.PositiveSmallIntegerField('暂停时间', help_text='单位秒', default=1)
+    sort_order = models.IntegerField('排序', default=0, db_index=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = '用例步骤'
         verbose_name_plural = '用例步骤管理'
+        ordering = ['sort_order']
