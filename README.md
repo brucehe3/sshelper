@@ -10,16 +10,17 @@ Requirements
 -------------
 * Python(3.4,3.5,3.6)
 * selenium(3.13.0)
-* Django(1.9.4及以上)
+* Django(2.0.6)
 
 Installation
 ------------
 
-需要安装selenium,Django
+需要安装selenium,Django,django-admin-sortable2
 
 ```bash
 pip install selenium
 pip install Django
+pip install django-admin-sortable2
 
 ```
 
