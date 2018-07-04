@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 
 class Command(BaseCommand):
@@ -20,13 +21,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        self.driver = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # define headless
+
+        self.driver = webdriver.Chrome(chrome_options=chrome_options)
 
         # 读取最新一条user_case_result处理
         results = UserCaseResult.objects.filter(status=0).order_by('created')
         for result in results:
             try:
-                self.run_test_case(result.user_case)
+                user_case = result.user_case
+                # 统计匹配点数
+                result.assert_num = UserCaseStep.objects.filter(
+                    user_case=user_case,
+                    step_type=UserCaseStep.STEP_TYPE_ASSERT).count()
+
+                result.assert_success_num = self.run_test_case(user_case)
                 result.status = 3
             except exceptions.WebDriverException as e:
                 result.fail_reason = e.msg
@@ -47,6 +57,7 @@ class Command(BaseCommand):
         #     return False
 
         steps = user_case.steps.all()
+        assert_success_num = 0
 
         for step in steps:
 
@@ -72,8 +83,11 @@ class Command(BaseCommand):
                 if not result:
                     self.stdout.write(self.style.ERROR('匹配检测失败'))
                 else:
+                    assert_success_num += 1
                     self.stdout.write(self.style.SUCCESS('匹配检测成功'))
 
             if step.pause_seconds:
                 self.stdout.write(self.style.SUCCESS('暂停 %s 秒' % step.pause_seconds))
                 time.sleep(step.pause_seconds)
+
+        return assert_success_num

@@ -24,6 +24,12 @@ pip install django-admin-sortable2
 
 ```
 
+selenium 需要 浏览器驱动支持
+
+[Chrome Driver](https://sites.google.com/a/chromium.org/chromedriver/downloads) 需要翻墙
+
+
+
 Documentation
 -------------
 待更新
