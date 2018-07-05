@@ -56,7 +56,7 @@ class UserCaseStep(models.Model):
     def get_step_type(cls, command):
         if command == 'open':
             return cls.STEP_TYPE_OPEN
-        elif command == 'click':
+        elif command == 'click' or command == 'doubleClick':
             return cls.STEP_TYPE_CLICK
         elif command == 'type':
             return cls.STEP_TYPE_INPUT

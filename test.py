@@ -13,10 +13,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 driver = webdriver.Chrome()
-driver.get("http://ss.mis/")
+driver.get('http://ss.mis')
 
 time.sleep(3)
+
 # 登陆
 username = driver.find_element_by_xpath('//*[@id="login"]/div[2]/div/div[2]/div[1]/input')
 username.clear()
@@ -41,6 +43,8 @@ time.sleep(3)
 button1 = driver.find_element_by_xpath('//*[@id="product"]/div[2]/div[1]/div[3]/button[2]')
 
 button1.click()
+
+
 
 try:
 
