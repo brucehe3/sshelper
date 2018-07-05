@@ -95,7 +95,7 @@ class UserCaseAdmin(admin.ModelAdmin):
 @admin.register(UserCaseResult)
 class UserCaseResultAdmin(admin.ModelAdmin):
 
-    list_display = ('user_case', 'status', 'fail_reason', 'created',)
+    list_display = ('user_case', 'status', 'assert_num', 'assert_success_num', 'created',)
 
     def has_add_permission(self, request):
         return False
