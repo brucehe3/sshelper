@@ -43,6 +43,22 @@ class UserCaseResult(models.Model):
         return self.user_case.name
 
 
+class UserCaseResultStep(models.Model):
+
+    STATUS_CHOICES = (
+        (0, '失败'),
+        (1, '成功')
+    )
+    user_case_result = models.ForeignKey(UserCaseResult, verbose_name='用例结果输出', on_delete=models.PROTECT)
+    step_name = models.CharField('备注名', max_length=20, blank=True, null=True)
+    status = models.PositiveSmallIntegerField('状态', choices=STATUS_CHOICES, default=0)
+    remark = models.CharField('备注', max_length=250, blank=True, null=True)
+    screenshot = models.TextField('截图', blank=True, null=True)
+
+    class Meta:
+        verbose_name = '用例输出步骤'
+
+
 class UserCaseStep(models.Model):
     """
     测试用例步骤
