@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django import forms
+from django.contrib import messages
+import django_rq
+
 from .models import UserCase, UserCaseStep, UserCaseResult
+from . import tasks
 from adminsortable2.admin import SortableInlineAdminMixin
 try:
     import xml.etree.cElementTree as ET
@@ -32,6 +36,8 @@ class UserCaseAdmin(admin.ModelAdmin):
             result.user_case = q
             result.save()
 
+            django_rq.enqueue(tasks.running_test_case, result.id)
+
         self.message_user(request, "选择的用例提交成功，等待执行测试 请进入【用例输出管理】查看执行结果")
 
     add_result.short_description = "选择用例进行测试"
@@ -46,8 +52,11 @@ class UserCaseAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
         if case_xml:
-            # 导入
-            self.parse_case_xml(obj, case_xml)
+            try:
+                # 导入
+                self.parse_case_xml(obj, case_xml)
+            except ValueError as e:
+                self.message_user(request, str(e), level=messages.ERROR)
 
     def parse_case_xml(self, obj, case_xml):
         # 取出排序最大值
@@ -71,7 +80,10 @@ class UserCaseAdmin(admin.ModelAdmin):
             step = UserCaseStep()
             step.name = '导入脚本步骤' + str(last_sort_order)
             step.user_case = obj
-            step.step_type = UserCaseStep.get_step_type(command)
+            step_type = UserCaseStep.get_step_type(command)
+            if not step_type:
+                raise ValueError('含有未知的操作步骤')
+            step.step_type = step_type
             step.sort_order = last_sort_order
             step.xpath = target
             step.step_text = value

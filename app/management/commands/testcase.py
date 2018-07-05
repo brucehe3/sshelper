@@ -1,15 +1,16 @@
+import time
+import re
 from django.core.management.base import BaseCommand
 from selenium import webdriver
 from selenium.common import exceptions
-import os
-import json
-import time
+
 from app.models import UserCaseStep, UserCase, UserCaseResult
-from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+
+XPATH_PATTERN = re.compile("\(([\s\S]*?)\)\[([0-9]+)\]")
 
 
 class Command(BaseCommand):
@@ -22,7 +23,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         chrome_options = Options()
-        chrome_options.add_argument("--headless")  # define headless
+        # chrome_options.add_argument("--headless")  # define headless
 
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
 
@@ -49,6 +50,21 @@ class Command(BaseCommand):
 
         self.driver.quit()
 
+    def get_element(self, xpath):
+
+        if xpath[:5] == 'xpath':
+            results = re.findall(XPATH_PATTERN, xpath)
+            if results:
+                result = results[0]
+                pos = int(result[1])
+                # 下标减一
+                pos -= 1
+                return self.driver.find_elements_by_xpath(result[0])[pos]
+        elif xpath[:2] == 'id':
+            return self.driver.find_element_by_id(xpath[3:])
+        else:
+            return self.driver.find_element_by_xpath(xpath)
+
     def run_test_case(self, user_case):
         #
         # try:
@@ -68,7 +84,7 @@ class Command(BaseCommand):
                 # 打开网页
                 self.driver.get(step.xpath)
             else:
-                element = self.driver.find_element_by_xpath(step.xpath)
+                element = self.get_element(step.xpath)
 
             if step.step_type == UserCaseStep.STEP_TYPE_CLICK:
                 element.click()

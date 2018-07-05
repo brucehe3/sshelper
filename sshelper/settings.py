@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'adminsortable2',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,13 @@ STATIC_ROOT = BASE_DIR
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': '',
+        'DEFAULT_TIMEOUT': 360,
+    },
+}
