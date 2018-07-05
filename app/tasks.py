@@ -19,11 +19,21 @@ def get_element(driver, xpath):
             pos = int(result[1])
             # 下标减一
             pos -= 1
-            return driver.find_elements_by_xpath(result[0])[pos]
+            elements = WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located((By.XPATH, result[0]))
+            )
+            return elements[pos]
+
     elif xpath[:2] == 'id':
-        return driver.find_element_by_id(xpath[3:])
+
+        return WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, xpath[3:]))
+        )
+
     else:
-        return driver.find_element_by_xpath(xpath)
+        return WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, xpath))
+        )
 
 
 def run_test_case_steps(driver, user_case):
@@ -52,6 +62,7 @@ def run_test_case_steps(driver, user_case):
                 pass
             else:
                 assert_success_num += 1
+
         if step.pause_seconds:
             time.sleep(step.pause_seconds)
 

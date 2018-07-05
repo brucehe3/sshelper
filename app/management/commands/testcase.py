@@ -59,11 +59,24 @@ class Command(BaseCommand):
                 pos = int(result[1])
                 # 下标减一
                 pos -= 1
-                return self.driver.find_elements_by_xpath(result[0])[pos]
+                # return self.driver.find_elements_by_xpath(result[0])[pos]
+
+                elements = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_all_elements_located((By.XPATH, result[0]))
+                )
+                # print(elements,pos,len(elements))
+                return elements[pos]
+
         elif xpath[:2] == 'id':
-            return self.driver.find_element_by_id(xpath[3:])
+            return WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, xpath[3:]))
+            )
+            # return self.driver.find_element_by_id(xpath[3:])
         else:
-            return self.driver.find_element_by_xpath(xpath)
+            return WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, xpath))
+            )
+            # return self.driver.find_element_by_xpath(xpath)
 
     def run_test_case(self, user_case):
         #
@@ -78,6 +91,7 @@ class Command(BaseCommand):
         for step in steps:
 
             self.stdout.write(self.style.SUCCESS('执行步骤：%s' % step.name))
+            # self.stdout.write(self.style.SUCCESS('当前的url：%s' % self.driver.current_url))
 
             element = None
             if step.step_type == UserCaseStep.STEP_TYPE_OPEN:

@@ -72,7 +72,7 @@ class UserCaseStep(models.Model):
     xpath = models.CharField('目标', help_text='用于找到对象', max_length=100, blank=True, null=True)
     step_type = models.SmallIntegerField('类型', choices=STEP_TYPE_CHOICES, default=0)
     step_text = models.CharField('输入值', max_length=100, blank=True, null=True)
-    pause_seconds = models.PositiveSmallIntegerField('暂停时间', help_text='单位秒', default=1)
+    pause_seconds = models.PositiveSmallIntegerField('暂停时间', help_text='单位秒', default=0)
     sort_order = models.IntegerField('排序', default=0, db_index=True)
 
     def __str__(self):
